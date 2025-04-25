@@ -8,8 +8,8 @@
 </head>
 
 <body>
-    @if (session()->has('error'))
-        <h3>{{ session('error') }}</h3>
+    @if (session()->has('message'))
+        <h3>{{ session('message') }}</h3>
     @endif
     @yield('content')
 </body>

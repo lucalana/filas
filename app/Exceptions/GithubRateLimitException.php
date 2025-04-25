@@ -20,6 +20,6 @@ class GithubRateLimitException extends Exception
     {
         $date = Carbon::createFromTimestampUTC($this->message);
         $minutes = (int) now()->diffInMinutes($date);
-        return redirect()->back()->with('error', 'Limite de requisição atingido. Volte em ' . $minutes . ' minutos.');
+        return redirect()->back()->with('message', 'Limite de requisição atingido. Volte em ' . $minutes . ' minutos.');
     }
 }

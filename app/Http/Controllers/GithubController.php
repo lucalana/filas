@@ -32,9 +32,15 @@ class GithubController extends Controller
                 'github_avatar_url' => $githubUserInfo['avatar_url'],
             ]
         );
+        // pegar todos os repositórios
+        // salvar repositorios no banco
+        // pegar branchs de cada repositorio
+        // pegar commits de cada branch
 
-
-        return to_route('home');
+        return to_route('home')->with(
+            'message',
+            'Vamos sincronizar todos repositórios com todas as branchs e commits. Quando finalizar será enviado um email!'
+        );
     }
 
     public function listRepositories(GithubUser $githubUser)
