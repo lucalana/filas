@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\GithubRepository;
 use App\Models\GithubUser;
 use App\Services\Github\ProfileService;
 use App\Services\Github\RepositoryService;
+use Illuminate\Http\Request;
 
 class GithubController extends Controller
 {
@@ -16,9 +16,14 @@ class GithubController extends Controller
         ]);
     }
 
-    public function searchRepositories(ProfileService $githubUser, RepositoryService $repository)
+    public function searchRepositories(Request $request, ProfileService $githubUser, RepositoryService $repository)
     {
-        $githubUserInfo = $githubUser->get(request()->get('user'));
+        $request->validate(
+            ['user' => ['required']],
+            ['user' => ['required' => 'Digite um usuário',]]
+        );
+        $githubUserName = request()->get('user');
+        $githubUserInfo = $githubUser->get($githubUserName);
         $githubUser = GithubUser::query()->updateOrCreate(
             ['github_id' => $githubUserInfo['id']],
             [
@@ -27,26 +32,7 @@ class GithubController extends Controller
                 'github_avatar_url' => $githubUserInfo['avatar_url'],
             ]
         );
-        $reposUrl = $githubUserInfo['repos_url'];
-        $repositories = $repository->getAll($reposUrl);
 
-        GithubRepository::where('github_user_id', $githubUser->id)->delete();
-        $insertRepos = collect($repositories)
-            ->filter(fn($repository) => $repository['private'] === false)
-            ->map(function ($repository) use ($githubUser) {
-                return [
-                    'github_user_id' => $githubUser->id,
-                    'repository_id' => $repository['id'],
-                    'repository_name' => $repository['name'],
-                    'repository_full_name' => $repository['full_name'],
-                    'repository_html_url' => $repository['html_url'],
-                    'is_fork' => $repository['fork'],
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            })
-            ->toArray();
-        $githubUser->githubRepositories()->insert($insertRepos);
 
         return to_route('home');
     }

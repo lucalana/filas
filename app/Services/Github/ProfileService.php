@@ -6,6 +6,8 @@ class ProfileService extends Service
 {
     public function get(string $userName)
     {
-        return $this->http->get('/users/' . $userName)->json();
+        return $this->http->withUrlParameters([
+            'user' => $userName
+        ])->get('/users/{user}')->json();
     }
 }

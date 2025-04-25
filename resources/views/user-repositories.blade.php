@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filas</title>
-</head>
-
-<body>
+@extends('layout.default')
+@section('content')
     <h1>Repositórios</h1>
     @foreach ($githubRepositories as $repository)
         <div>
@@ -19,6 +11,4 @@
             </ul>
         </div>
     @endforeach
-</body>
-
-</html>
+@endsection
