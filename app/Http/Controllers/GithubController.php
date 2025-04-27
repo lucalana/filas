@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\RepositoriesSync;
 use App\Models\GithubUser;
 use App\Services\Github\ProfileService;
-use App\Services\Github\RepositoryService;
 use Illuminate\Http\Request;
 
 class GithubController extends Controller
@@ -16,7 +16,7 @@ class GithubController extends Controller
         ]);
     }
 
-    public function searchRepositories(Request $request, ProfileService $githubUser, RepositoryService $repository)
+    public function searchRepositories(Request $request, ProfileService $githubUser)
     {
         $request->validate(
             ['user' => ['required']],
@@ -33,9 +33,7 @@ class GithubController extends Controller
             ]
         );
         // pegar todos os repositórios
-        // salvar repositorios no banco
-        // pegar branchs de cada repositorio
-        // pegar commits de cada branch
+        RepositoriesSync::dispatch($githubUser->id, $githubUser->github_user);
 
         return to_route('home')->with(
             'message',
